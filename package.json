@@ -1,0 +1,26 @@
+{
+  "name": "e-commerce-website",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "client": "npm run dev --prefix Front/my-app",
+    "server": "npm run test --prefix server",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ajaykhanal1/E-Commerce-Complete-Daraz-Node-React.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Ajaykhanal1/E-Commerce-Complete-Daraz-Node-React/issues"
+  },
+  "homepage": "https://github.com/Ajaykhanal1/E-Commerce-Complete-Daraz-Node-React#readme",
+  "devDependencies": {
+    "concurrently": "^10.0.3"
+  }
+}

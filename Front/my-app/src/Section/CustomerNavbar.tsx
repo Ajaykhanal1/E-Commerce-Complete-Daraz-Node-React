@@ -75,9 +75,6 @@ const Navbar: React.FC<Props> = ({ setProducts: setParentProducts }) => {
               <a href="/cart">CART</a>
             </li>
             <li>
-              <a href="/contact">CONTACT</a>
-            </li>
-            <li>
               <a href="/login">SELLER ACCOUNT</a>
             </li>
 

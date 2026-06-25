@@ -1,5 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { LoaderIcon } from "lucide-react"
+
 
 interface OrderItem {
     productId: string;
@@ -40,7 +43,6 @@ const SellerOrders: React.FC = () => {
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const [updatingStatus, setUpdatingStatus] = useState(false);
     const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null);
-
     const token = localStorage.getItem("token");
     const sellerId = localStorage.getItem("userId");
 
@@ -85,7 +87,7 @@ const SellerOrders: React.FC = () => {
         // Find the current order to get its status
         const currentOrder = orders.find(order => order._id === orderId);
         if (!currentOrder) return;
-        
+
         // Show confirmation dialog with current status
         const confirmed = window.confirm(getStatusMessage(currentOrder.status, newStatus));
         if (!confirmed) {
@@ -95,7 +97,7 @@ const SellerOrders: React.FC = () => {
         try {
             setUpdatingStatus(true);
             setUpdatingOrderId(orderId);
-            
+
             const response = await axios.put(
                 `http://localhost:5000/api/orders/${orderId}/status`,
                 { status: newStatus },
@@ -107,7 +109,7 @@ const SellerOrders: React.FC = () => {
             );
 
             // Update only the specific order in the list - NO FULL RE-RENDER
-            setOrders(prevOrders => 
+            setOrders(prevOrders =>
                 prevOrders.map(order =>
                     order._id === orderId
                         ? { ...order, status: newStatus }
@@ -138,6 +140,14 @@ const SellerOrders: React.FC = () => {
     useEffect(() => {
         fetchOrders();
     }, []);
+
+    useEffect(() => {
+        document.body.classList.toggle("overflow-hidden", updatingStatus);
+
+        return () => {
+            document.body.classList.remove("overflow-hidden");
+        };
+    }, [updatingStatus]);
 
     const getStatusColor = (status: string) => {
         switch (status.toLowerCase()) {
@@ -213,7 +223,7 @@ const SellerOrders: React.FC = () => {
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 relative">
             <div className="bg-white p-6 rounded-xl shadow">
                 <h2 className="text-xl font-bold mb-6">My Orders ({orders.length})</h2>
 
@@ -222,9 +232,8 @@ const SellerOrders: React.FC = () => {
                     {orders.map((order) => (
                         <div
                             key={order._id}
-                            className={`border rounded-lg p-4 hover:shadow-md transition cursor-pointer ${
-                                updatingOrderId === order._id ? "opacity-50" : ""
-                            }`}
+                            className={`border rounded-lg p-4 hover:shadow-md transition cursor-pointer ${updatingOrderId === order._id ? "opacity-50" : ""
+                                }`}
                             onClick={() => setSelectedOrder(order)}
                         >
                             <div className="flex justify-between items-start mb-3">
@@ -282,7 +291,7 @@ const SellerOrders: React.FC = () => {
                                     )}
                                 </div>
                             </div>
-                            
+
                             {/* Show updating indicator on the specific order card */}
                             {updatingOrderId === order._id && (
                                 <div className="mt-3 pt-3 border-t flex items-center justify-center gap-2 text-blue-500">
@@ -428,13 +437,12 @@ const SellerOrders: React.FC = () => {
                                             key={status}
                                             onClick={() => updateOrderStatus(selectedOrder._id, status)}
                                             disabled={updatingStatus || selectedOrder.status === status}
-                                            className={`px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 ${
-                                                selectedOrder.status === status
-                                                    ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-                                                    : status === "cancelled"
+                                            className={`px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 ${selectedOrder.status === status
+                                                ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+                                                : status === "cancelled"
                                                     ? "bg-red-500 text-white hover:bg-red-600"
                                                     : "bg-blue-500 text-white hover:bg-blue-600"
-                                            } disabled:opacity-50 disabled:cursor-not-allowed`}
+                                                } disabled:opacity-50 disabled:cursor-not-allowed`}
                                         >
                                             {updatingStatus && updatingOrderId === selectedOrder._id && (
                                                 <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
@@ -446,6 +454,15 @@ const SellerOrders: React.FC = () => {
                             </div>
                         </div>
                     </div>
+                </div>
+            )}
+
+            {updatingStatus && (
+                <div className="fixed inset-0 z-9999 bg-black flex flex-col items-center justify-center gap-4">
+                    <LoaderIcon className="w-16 h-16 text-white animate-spin" />
+                    <p className="text-white text-lg font-medium">
+                        Updating Order Status...
+                    </p>
                 </div>
             )}
         </div>

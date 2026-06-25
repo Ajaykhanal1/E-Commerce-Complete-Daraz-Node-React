@@ -12,6 +12,8 @@ import SellerBody from "./Section/SellerBody"
 import EditProduct from "./Section/EditProduct"
 import View from "./Section/View"
 import Cart from "./Section/Cart"
+import Success from "./Section/Success.tsx";
+import Failure from "./Section/Failure.tsx";
 
 
 function App() {
@@ -30,6 +32,9 @@ function App() {
           <Route path="/edit-product/:id" element={<ProtectedRoute><EditProduct /></ProtectedRoute>} />
           <Route path="/view/:id" element={<View />} />
           <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
+          <Route path="/success" element={<Success />} />
+                  <Route path="/failure" element={<Failure />} />
+
         </Routes>
       </BrowserRouter>
     </>
